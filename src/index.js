@@ -1,7 +1,6 @@
 const { Client } = require('discord.js')
 const dotenv = require('dotenv')
-const { getTokenPrice, getTokenSymbol } = require('./fetchData')
-const { getCoingeckoCircSupply } = require('./fetchCirculatingSupply')
+const { getFundBalance, getLargeTransactions } = require('./fetchData')
 
 const { numberWithCommas } = require('./utils')
 
@@ -10,28 +9,27 @@ dotenv.config()
 const client = new Client()
 
 // eslint-disable-next-line
-client.on('ready', () => console.log(`Bot successfully started as ${client.user.tag}`))
+client.on('ready', () => {
+  console.log(`Bot successfully started as ${client.user.tag}`)
+  client.user.setActivity(
+    `Treasury Balance`,
+    { type: 'WATCHING' },
+  )
+})
 
-// Updates token price on bot's nickname every X amount of time
+// Updates treasury balance on bot's status every X amount of time
 client.setInterval(async () => {
-  const price = await getTokenPrice()
-  const symbol = await getTokenSymbol()
-  const circSupply = await getCoingeckoCircSupply(symbol)
+
+  const treasuryBalance = await getFundBalance(process.env.TREASURY_ADDRESS)
+  const innovationFundBalance = await getFundBalance(process.env.INNOVATION_ADDRESS)
+  const balance = (treasuryBalance + innovationFundBalance).toFixed(2)
 
   client.guilds.cache.forEach(async (guild) => {
     const botMember = guild.me
-    await botMember.setNickname(`${symbol}: $${numberWithCommas(price)}`)
-    console.log(`Updated to - ${symbol}: $${numberWithCommas(price)}`)
+    await botMember.setNickname(`$${numberWithCommas(balance)}`)
   })
 
-  console.log(circSupply)
-
-  if (circSupply) {
-    client.user.setActivity(
-      `MC: $${numberWithCommas(Math.round(price * circSupply))}`,
-      { type: 'WATCHING' },
-    )
-  }
+  console.log(`Updated to - $${numberWithCommas(balance)}`)
 }, 1 * 60 * 1000)
 
 client.login(process.env.DISCORD_API_TOKEN)

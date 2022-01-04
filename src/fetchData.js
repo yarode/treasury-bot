@@ -95,7 +95,3 @@ exports.getFundBalance = async (fund) => {
   balance = mim_balance + (lp_balance * lp_value)
   return balance
 }
-
-exports.getLargeTransactions = async () => {
-  transactions = await getTransactionsByAccount(process.env.TREASURY_ADDRESS, null, null)
-}

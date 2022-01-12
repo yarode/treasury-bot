@@ -1,5 +1,6 @@
 const dotenv = require('dotenv')
 const { getTransactionsByAccount } = require('./utils')
+const fetch = require('node-fetch')
 
 dotenv.config()
 
@@ -83,6 +84,14 @@ async function getLPValue(mim_contract, lp_contract) {
   return value
 }
 
+exports.getMagBalanceUSD = async () => {
+  price = await getTokenPrice()
+  balance = await getBalance(mag_contract, process.env.MULTISIG_ADDRESS)
+  balance /= SPECIFIC_DECIMALS
+  balance *= price
+  return balance
+}
+
 exports.getFundBalance = async (fund) => {
   var lp_balance = await getBalance(lp_contract, fund)
   lp_balance /= DECIMALS
@@ -94,4 +103,9 @@ exports.getFundBalance = async (fund) => {
 
   balance = mim_balance + (lp_balance * lp_value)
   return balance
+}
+
+exports.getYieldBalance = async () => {
+  const balance = await (await fetch(process.env.DEBANK_API_CALL)).json()
+  return balance.usd_value
 }

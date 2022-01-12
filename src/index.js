@@ -36,19 +36,3 @@ client.setInterval(async () => {
 }, parseInt(process.env.INTERVAL) * 60 * 1000)
 
 client.login(process.env.DISCORD_API_TOKEN)
-
-
-/*
-async function calculateTotal() {
-  treasury = await getFundBalance(process.env.TREASURY_ADDRESS)
-  innovation = await getFundBalance(process.env.INNOVATION_ADDRESS)
-  yieldBalance = await getYieldBalance()
-  magBalance = await getMagBalanceUSD()
-  total = treasury + innovation + yieldBalance - magBalance
-  return total
-}
-
-calculateTotal().then(res => {
-  console.log(`Total: ${res.toFixed(2)}`)
-})
-*/

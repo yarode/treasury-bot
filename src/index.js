@@ -22,9 +22,13 @@ client.on('ready', () => {
 client.setInterval(async () => {
 
   const treasuryBalance = await getFundBalance(process.env.TREASURY_ADDRESS)
-  const innovationFundBalance = await getFundBalance(process.env.INNOVATION_ADDRESS)
-  const yieldBalance = await getYieldBalance()
+  console.log(treasuryBalance)
+  const innovationFundBalance = await getYieldBalance(process.env.INNOVATION_ADDRESS)
+  console.log(innovationFundBalance)
+  const yieldBalance = await getYieldBalance(process.env.MULTISIG_ADDRESS)
+  console.log(yieldBalance)
   const magBalance = await getMagBalanceUSD()
+  console.log(magBalance)
   const balance = (treasuryBalance + innovationFundBalance + yieldBalance - magBalance).toFixed(2)
 
   client.guilds.cache.forEach(async (guild) => {
@@ -33,6 +37,6 @@ client.setInterval(async () => {
   })
 
   console.log(`Updated to - $${numberWithCommas(balance)}`)
-}, parseInt(process.env.INTERVAL) * 60 * 1000)
+}, parseFloat(process.env.INTERVAL) * 60 * 1000)
 
 client.login(process.env.DISCORD_API_TOKEN)

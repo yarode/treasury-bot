@@ -105,7 +105,8 @@ exports.getFundBalance = async (fund) => {
   return balance
 }
 
-exports.getYieldBalance = async () => {
-  const balance = await (await fetch(process.env.DEBANK_API_CALL)).json()
+exports.getYieldBalance = async (address) => {
+  apiCall = `https://openapi.debank.com/v1/user/chain_balance?id=${address}&chain_id=avax`
+  const balance = await (await fetch(apiCall)).json()
   return balance.usd_value
 }
